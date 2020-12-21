@@ -92,6 +92,7 @@ public class Commands {
 		register("info-pos", new Command(Commands::infoPos, Icon.move));
 		register("help", new Command(Commands::help, Icon.infoCircle));
 		register("chaos-kick", new Command(Commands::chaosKick, Icon.hammer));
+		register("breakpower", new Command(Commands::breakpower, Icon.discord));
 		Events.fire(Internal.Init.CommandsRegister);
 		Log.infoTag("Ozone", "Commands Center Initialized");
 		Log.infoTag("Ozone", commandsList.size() + " commands loaded");
@@ -112,7 +113,11 @@ public class Commands {
 		tellUser("Clearing: " + Pathfinding.render.size() + " overlay");
 		Pathfinding.render.clear();
 	}
-	
+
+	public static void breakpower(ArrayList<String> arg) {
+		tellUser("wtf no");
+	}
+
 	public static void shuffleConfigurable() {
 	
 	}
