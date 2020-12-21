@@ -18,7 +18,7 @@ but its volas shenanigans
 [0.9.0:0.10.2][Mindustry v120] \
 [Download](https://jitpack.io/com/github/o7-Fire/Mindustry-Ozone/Desktop/-SNAPSHOT/Desktop--SNAPSHOT.jar) [Snapshot/Latest-Build]-(May take a while to build) \
 [Other Version](https://jitpack.io/#o7-Fire/Mindustry-Ozone) [Jitpack] \
-[Other Version](https://github.com/o7-Fire/Mindustry-Ozone/actions) [Github]
+[Other Version](https://github.com/Volas171/Mindustry-Ozone/actions) [Github]
 
 # Minimum Requirement
 * Java 14 and added to %PATH%
