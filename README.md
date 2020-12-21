@@ -1,8 +1,15 @@
 # Project Ozone
 ![Java CI](https://github.com/o7-Fire/Mindustry-Ozone/workflows/Java%20CI/badge.svg)
-[![](https://jitpack.io/v/o7-Fire/Mindustry-Ozone.svg)](https://jitpack.io/#o7-Fire/Mindustry-Ozone)
-# Download
+![](https://img.shields.io/jitpack/v/github/o7-Fire/Mindustry-Ozone?label=Mindustry-Ozone)
+![](https://img.shields.io/github/v/release/Anuken/Mindustry?label=Mindustry-Latest)
+![](https://img.shields.io/badge/java-14-orange)
+![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fo7-Fire%2FMindustry-Ozone.svg?type=shield)
 
+
+
+# Download
+[Download](https://jitpack.iocom/github/o7-Fire/Mindustry-Ozone/Desktop/v121.4/Desktop-v121.4.jar)
+[0.9.0:0.11.4][Mindustry v121.4] \
 [Download](https://jitpack.io/com/github/o7-Fire/Mindustry-Ozone/Desktop/a8805a30a5/Desktop-a8805a30a5.jar)
 [0.9.0:0.11.0][Mindustry v121] \
 [Download](https://github.com/o7-Fire/Mindustry-Ozone/releases/download/v120/Ozone-Desktop.jar)
@@ -26,7 +33,7 @@
 * 0.Get `Ozone-Dekstop.jar`
 * 1.Install **Java 14**
 * 2.Run Ozone installation by opening `Ozone-Desktop.jar` with java `java -jar Ozone-Dekstop.jar`
-* 3.Run or Run Mindustry
+* 3.Run, Start, Run or Install Mindustry
 * 4.fuck its crash
 * 5.you are a failure, can't even install a simple mods
 * 6.nvm its show up again\
@@ -42,7 +49,8 @@ or
 * Anti-Spam
 * Raid pattern detection
 * Systematic player logging
-* Bots powered moderation
+* Bots powered moderation\
+why the fuck we adding moderation tools if the client meant for griefing
 
 > Raiding tools
 * Spamming tools
@@ -53,4 +61,6 @@ or
 * Nuker
 
 #Disclaimer
-It's totally for entertainment purpose, user is fully responsible for using this tools"# Mindustry-Ozone" 
+It's totally for entertainment purpose, user is fully responsible for using this tools
+<h4 align="center">Visitor's count :eyes:</h4>
+<p align="center"><img src="https://profile-counter.glitch.me/%7Bsketchyirishman%7D/count.svg" alt="sketchyirishman :: Visitor's Count" /></p>
