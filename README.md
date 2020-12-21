@@ -1,5 +1,7 @@
 # Project Ozone
-![Java CI](https://github.com/o7-Fire/Mindustry-Ozone/workflows/Java%20CI/badge.svg)
+but its volas shenanigans
+
+![Java CI](https://github.com/Volas171/Mindustry-Ozone/workflows/Java%20CI/badge.svg)
 ![](https://img.shields.io/jitpack/v/github/o7-Fire/Mindustry-Ozone?label=Mindustry-Ozone)
 ![](https://img.shields.io/github/v/release/Anuken/Mindustry?label=Mindustry-Latest)
 ![](https://img.shields.io/badge/java-14-orange)
