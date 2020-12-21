@@ -38,10 +38,7 @@ import arc.util.Log;
 import mindustry.Vars;
 import mindustry.ai.Astar;
 import mindustry.game.EventType;
-import mindustry.gen.Call;
-import mindustry.gen.Groups;
-import mindustry.gen.Icon;
-import mindustry.gen.Player;
+import mindustry.gen.*;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -50,8 +47,8 @@ import mindustry.world.blocks.sandbox.ItemSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -60,13 +57,45 @@ import java.util.function.Consumer;
 public class Commands {
 	
 	public static final Queue<Task> commandsQueue = new Queue<>();
-	public static HashMap<String, Command> commandsList = new HashMap<>();
+	public static Map<String, Command> commandsList = new TreeMap<>();
 	
 	private volatile static boolean falseVote = false;
 	
 	private static boolean init = false;
 	
 	private volatile static boolean chatting = false;
+	public static void init() {
+		if (init) return;
+		init = true;
+		Events.run(EventType.Trigger.update, () -> {
+			if (commandsQueue.isEmpty()) return;
+			commandsQueue.first().update();
+			if (commandsQueue.first().isCompleted()) commandsQueue.removeFirst();
+		});
+		//register("message-log", new Command(Commands::messageLog, Icon.rotate));
+		//register("shuffle-configurable", new Command(Commands::shuffleConfigurable, Icon.rotate));
+		register("task-move", new Command(Commands::taskMove));
+		register("info-pathfinding", new Command(Commands::infoPathfinding));
+		register("chat-repeater", new Command(Commands::chatRepeater), "Chat Spammer by nexity");
+		register("task-deconstruct", new Command(Commands::taskDeconstruct));
+		register("send-colorize", new Command(Commands::sendColorize));
+		
+		//Commands with icon support no-argument-commands
+		register("random-kick", new Command(Commands::randomKick, Icon.hammer));
+		register("info-unit", new Command(Commands::infoUnit, Icon.units));
+		register("force-exit", new Command(Commands::forceExit, Icon.exit));
+		register("task-clear", new Command(Commands::taskClear, Icon.cancel));
+		register("shuffle-sorter", new Command(Commands::shuffleSorter, Icon.rotate));
+		register("clear-pathfinding-overlay", new Command(Commands::clearPathfindingOverlay, Icon.cancel));
+		register("hud-frag", new Command(Commands::hudFrag, Icon.info), "HUD Test");
+		register("hud-frag-toast", new Command(Commands::hudFragToast, Icon.info), "HUD Toast Test");
+		register("info-pos", new Command(Commands::infoPos, Icon.move));
+		register("help", new Command(Commands::help, Icon.infoCircle));
+		register("chaos-kick", new Command(Commands::chaosKick, Icon.hammer));
+		Events.fire(Internal.Init.CommandsRegister);
+		Log.infoTag("Ozone", "Commands Center Initialized");
+		Log.infoTag("Ozone", commandsList.size() + " commands loaded");
+	}
 	
 	public static void hudFragToast(ArrayList<String> arg){
 		String s = "["+Random.getRandomHexColor()+"]Test "+Random.getString(16);
@@ -103,35 +132,34 @@ public class Commands {
 	}
 	
 	public static void shuffleSorter() {
-		Future<Tile> f = Interface.getTile(tile -> {
-			if (tile.build == null) return false;
-			return tile.build.interactable(Vars.player.team()) && (tile.build.block() instanceof Sorter || tile.block() instanceof ItemSource);
-		});
-		if (f == null) {
-			tellUser("wtf ?");
-			return;
-		}
-		commandsQueue.add(new Task() {
-			boolean completed = false;
-			
-			@Override
-			public boolean isCompleted() {
-				return completed;
+		
+		commandsQueue.add(new Completable() {
+			Future<Building> f = null;
+			{
+				f = Interface.getBuild(build -> {
+					if (build == null) return false;
+					return build.interactable(Vars.player.team()) && (build.block() instanceof Sorter || build.block() instanceof ItemSource);
+				});
+				if (f == null) {
+					tellUser("wtf ? shuffle sorter future is null");
+					completed = true;
+				}
 			}
-			
+		
 			@Override
 			public void update() {
+				if(f == null)return;
 				if (!f.isDone()) return;
 				if (completed) return;
 				completed = true;
 				try {
-					Tile t = f.get();
-					if (t == null) {
+					Building t = f.get();
+					if (t == null || t.tile == null) {
 						tellUser("block can't be find");
 						return;
 					}
 					Item target = Random.getRandom(Vars.content.items().toArray(Item.class));
-					t.build.configure(target);
+					t.tile().build.configure(target);
 				}catch (InterruptedException | ExecutionException e) {
 					Log.errTag("Ozone-Executor", "Failed to get tile:\n" + e.toString());
 				}
@@ -301,46 +329,11 @@ public class Commands {
 	
 	public static void infoPos() {
 		tellUser("Player x,y: " + Vars.player.x + ", " + Vars.player.y);
-		tellUser("Tile x,y: " + Vars.player.tileX() + ", " + Vars.player.tileY());
+		tellUser("TileOn x,y: " + Vars.player.tileX() + ", " + Vars.player.tileY());
 		if (Vars.player.tileOn() != null && Vars.player.tileOn().build != null)
 			tellUser("TileOn: Class: " + Vars.player.tileOn().build.getClass().getName());
 	}
 	
-	public static void init() {
-		if (init) return;
-		init = true;
-		Events.run(EventType.Trigger.update, () -> {
-			if (commandsQueue.isEmpty()) return;
-			commandsQueue.first().update();
-			if (commandsQueue.first().isCompleted()) commandsQueue.removeFirst();
-		});
-		
-	
-		register("task-move", new Command(Commands::taskMove));
-		register("info-pathfinding", new Command(Commands::infoPathfinding));
-		register("chat-repeater", new Command(Commands::chatRepeater), "Chat Spammer by nexity");
-		register("task-deconstruct", new Command(Commands::taskDeconstruct));
-		register("send-colorize", new Command(Commands::sendColorize));
-		
-		//Commands with icon support no-argument-commands
-		register("random-kick", new Command(Commands::randomKick, Icon.hammer));
-		register("info-unit", new Command(Commands::infoUnit, Icon.units));
-		register("force-exit", new Command(Commands::forceExit, Icon.exit));
-		register("task-clear", new Command(Commands::taskClear, Icon.cancel));
-		register("shuffle-sorter", new Command(Commands::shuffleSorter, Icon.rotate));
-		register("message-log", new Command(Commands::messageLog, Icon.rotate));
-		register("shuffle-configurable", new Command(Commands::shuffleConfigurable, Icon.rotate));
-		register("clear-pathfinding-overlay", new Command(Commands::clearPathfindingOverlay, Icon.cancel));
-		register("hud-frag", new Command(Commands::hudFrag, Icon.info), "HUD Test");
-		register("hud-frag-toast", new Command(Commands::hudFragToast, Icon.info), "HUD Toast Test");
-		register("info-pos", new Command(Commands::infoPos, Icon.move));
-		register("help", new Command(Commands::help, Icon.infoCircle));
-		register("chaos-kick", new Command(Commands::chaosKick, Icon.hammer));
-		Events.fire(Internal.Init.CommandsRegister);
-		
-		Log.infoTag("Ozone", "Commands Center Initialized");
-		Log.infoTag("Ozone", commandsList.size() + " commands loaded");
-	}
 	
 	public static void taskMove(ArrayList<String> s) {
 		if (s.size() < 2) {
@@ -379,7 +372,7 @@ public class Commands {
 			local.append(s.getKey());
 			while (local.length() < target)
 				local.append(" ");
-			local.append(":").append(s.getValue().description).append("\n");
+			local.append(":").append(s.getValue().description);
 			as.add(local.toString());
 		}
 		for(String s : as)

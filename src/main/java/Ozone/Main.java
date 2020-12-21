@@ -26,6 +26,7 @@ import Ozone.Patch.SettingsDialog;
 import Ozone.Patch.Translation;
 import Ozone.UI.CommandsListFrag;
 import Ozone.UI.OzoneMenu;
+import Ozone.Watcher.BlockTracker;
 import Settings.Core;
 import arc.Events;
 import arc.scene.ui.Dialog;
@@ -57,6 +58,7 @@ public class Main {
 		TaskInterface.init();
 		initEvent();
 		Pathfinding.init();
+		BlockTracker.init();
 	}
 	
 	
@@ -188,8 +190,6 @@ public class Main {
 			mindustry.Vars.ui.chatfrag.addMessage("gay", "no");
 			Log.infoTag("Ozone", "Patching");
 			Events.fire(Internal.Init.PatchRegister);
-			Translation.register();
-			Vars.ui.settings = new SettingsDialog();
 			Vars.enableConsole = true;
 			Log.infoTag("Ozone", "Patching Complete");
 			if (Core.debugMode) Log.level = (Log.LogLevel.debug);
@@ -202,6 +202,7 @@ public class Main {
 	
 	
 	public static void patchTranslation() {
+		Translation.register();
 		ObjectMap<String, String> modified = arc.Core.bundle.getProperties();
 		for (ObjectMap.Entry<String, String> s : Interface.bundle) {
 			modified.put(s.key, s.value);
@@ -222,6 +223,7 @@ public class Main {
 				titleFontColor = Pal.accent;
 			}
 		};
+		Vars.ui.settings = new SettingsDialog();
 		Manifest.commFrag = new CommandsListFrag();
 		Manifest.menu = new OzoneMenu(arc.Core.bundle.get("ozone.hud"), ozoneStyle);
 		Manifest.commFrag.build(Vars.ui.hudGroup);
